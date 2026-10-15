@@ -31,7 +31,7 @@ def get_activity():
     raise ValueError("未配置 POLYMARKET_ADDRESS 环境变量")
 
   # 使用 Polymarket 公开 Data API 查询活动日志 (订单/成交)
-  url = f"https://data-api.polymarket.com/activity?user={ADDRESS}&limit=10"
+  url = f"https://data-api.polymarket.com/activity?user={ADDRESS}&limit=5"
   headers = {"User-Agent": "Mozilla/5.0"}
 
   res = requests.get(url, headers=headers, timeout=15)
@@ -52,6 +52,8 @@ def translate_title_and_league(title):
       "Champions League": "欧冠联赛 (Champions League)",
       "Hong Kong Premier League": "香港超级联赛 (Hong Kong Premier League)",
       "Tai Po FC": "大埔足球俱乐部 (Tai Po FC)",
+      "FC Dinamo Minsk": "明斯克迪纳摩 (FC Dinamo Minsk)",
+      "Slavia Mozyr": "莫济里斯拉维亚 (Slavia Mozyr)",
   }
 
   translated_desc = title
@@ -71,40 +73,23 @@ def main():
     print("暂无活动记录。")
     return
 
-  # 获取最新一条记录
+  # 直接获取最新的一条真实成交/活动记录进行推送
   latest = activities[0]
 
-  # 1. 检查交易时间，过滤掉旧消息（防重复推送核心逻辑）
+  # 1. 解析并转换时间：北京时间 (UTC+8)
   raw_timestamp = latest.get("timestamp")
-  if not raw_timestamp:
-    print("未获取到有效时间戳，跳过。")
-    return
-
-  try:
-    ts = int(raw_timestamp)
-    if ts > 1e12:
-      ts = ts / 1000  # 兼容毫秒级时间戳
-
-    trade_datetime_utc = datetime.fromtimestamp(ts, timezone.utc)
-    current_time_utc = datetime.now(timezone.utc)
-
-    # 计算交易距离当前时间过去了几秒
-    time_diff_seconds = (current_time_utc - trade_datetime_utc).total_seconds()
-
-    # 如果这笔交易已经过去超过 15 分钟（900秒），说明是旧交易，直接跳过不发！
-    if time_diff_seconds > 900:
-      print(
-          f"最新交易产生于 {int(time_diff_seconds // 60)} 分钟前，属于旧消息，"
-          "跳过推送。"
-      )
-      return
-
-    # 转换为北京时间展示
-    dt_beijing = trade_datetime_utc.astimezone(timezone(timedelta(hours=8)))
-    time_str = dt_beijing.strftime("%Y-%m-%d %H:%M:%S (北京时间)")
-  except Exception as e:
-    print(f"时间解析错误: {e}")
-    return
+  time_str = "未知时间"
+  if raw_timestamp:
+    try:
+      ts = int(raw_timestamp)
+      if ts > 1e12:
+        ts = ts / 1000
+      dt_utc = datetime.fromtimestamp(ts, timezone.utc)
+      dt_beijing = dt_utc.astimezone(timezone(timedelta(hours=8)))
+      time_str = dt_beijing.strftime("%Y-%m-%d %H:%M:%S (北京时间)")
+    except Exception as e:
+      print(f"时间转换错误: {e}")
+      time_str = str(raw_timestamp)
 
   # 2. 提取交易核心字段
   trade_type = latest.get("type", "未知类型")
@@ -133,7 +118,7 @@ def main():
     <p><b>下单时间：</b>{time_str}</p>
     """
 
-  print("检测到新交易，触发推送...")
+  print("准备推送最新交易...")
   send_pushplus(title, content)
 
 
