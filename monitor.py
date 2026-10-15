@@ -43,10 +43,7 @@ def get_activity():
 
 
 def translate_title_and_league(title):
-  """基础的中英文映射和语义优化函数
-
-  你可以根据自己常买的联赛或球队在这里扩充映射词典
-  """
+  """基础的中英文映射和语义优化函数"""
   league_map = {
       "Premier League": "英超联赛 (Premier League)",
       "La Liga": "西甲联赛 (La Liga)",
@@ -77,20 +74,37 @@ def main():
   # 获取最新一条记录
   latest = activities[0]
 
-  # 1. 解析并转换时间：北京时间 (UTC+8)
+  # 1. 检查交易时间，过滤掉旧消息（防重复推送核心逻辑）
   raw_timestamp = latest.get("timestamp")
-  time_str = "未知时间"
-  if raw_timestamp:
-    try:
-      ts = int(raw_timestamp)
-      if ts > 1e12:
-        ts = ts / 1000
-      dt_utc = datetime.fromtimestamp(ts, timezone.utc)
-      dt_beijing = dt_utc.astimezone(timezone(timedelta(hours=8)))
-      time_str = dt_beijing.strftime("%Y-%m-%d %H:%M:%S (北京时间)")
-    except Exception as e:
-      print(f"时间转换错误: {e}")
-      time_str = str(raw_timestamp)
+  if not raw_timestamp:
+    print("未获取到有效时间戳，跳过。")
+    return
+
+  try:
+    ts = int(raw_timestamp)
+    if ts > 1e12:
+      ts = ts / 1000  # 兼容毫秒级时间戳
+
+    trade_datetime_utc = datetime.fromtimestamp(ts, timezone.utc)
+    current_time_utc = datetime.now(timezone.utc)
+
+    # 计算交易距离当前时间过去了几秒
+    time_diff_seconds = (current_time_utc - trade_datetime_utc).total_seconds()
+
+    # 如果这笔交易已经过去超过 15 分钟（900秒），说明是旧交易，直接跳过不发！
+    if time_diff_seconds > 900:
+      print(
+          f"最新交易产生于 {int(time_diff_seconds // 60)} 分钟前，属于旧消息，"
+          "跳过推送。"
+      )
+      return
+
+    # 转换为北京时间展示
+    dt_beijing = trade_datetime_utc.astimezone(timezone(timedelta(hours=8)))
+    time_str = dt_beijing.strftime("%Y-%m-%d %H:%M:%S (北京时间)")
+  except Exception as e:
+    print(f"时间解析错误: {e}")
+    return
 
   # 2. 提取交易核心字段
   trade_type = latest.get("type", "未知类型")
@@ -119,7 +133,7 @@ def main():
     <p><b>下单时间：</b>{time_str}</p>
     """
 
-  print("触发推送测试...")
+  print("检测到新交易，触发推送...")
   send_pushplus(title, content)
 
 
