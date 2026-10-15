@@ -1,4 +1,4 @@
-Name: Polymarket Order Monitor
+name: Polymarket Order Monitor
 
 on:
   schedule:
@@ -9,7 +9,6 @@ jobs:
   monitor:
     runs-on: ubuntu-latest
     
-    # 赋予仓库读写权限，允许脚本自动提交 sent_history.txt
     permissions:
       contents: write
 
@@ -28,5 +27,5 @@ jobs:
         env:
           POLYMARKET_ADDRESS: ${{ secrets.POLYMARKET_ADDRESS }}
           PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 注入内置 Token 用于自动同步历史文件
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python monitor.py
