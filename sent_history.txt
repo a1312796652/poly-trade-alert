@@ -43,3 +43,4 @@
 1792166782_5_0.64_Hertha BSC lead
 1792168315_5_0.05_Enisey Krasnoya
 1792170324_80_0.98_Exact Score: SC
+1792173525_80_0.979_Exact Score: FC
