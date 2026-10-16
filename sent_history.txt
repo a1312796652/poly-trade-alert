@@ -22,3 +22,4 @@
 1792106904_45_0.964_Exact Score: Es
 1792107618_35_0.964_Exact Score: Es
 1792112238_5.02_0.9_Spread: Real Ca
+1792124697_80_0_Exact Score: Es
