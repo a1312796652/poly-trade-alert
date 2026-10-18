@@ -62,3 +62,4 @@
 1792290434_5_0_Senators vs. Fl
 1792306197_80.09_0.976_Exact Score: FC
 1792309691_80.09_0.999_Exact Score: FC
+1792317779_80_0.95_Exact Score: Ka
