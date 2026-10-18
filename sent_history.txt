@@ -63,3 +63,4 @@
 1792306197_80.09_0.976_Exact Score: FC
 1792309691_80.09_0.999_Exact Score: FC
 1792317779_80_0.95_Exact Score: Ka
+1792318533_5.1_0.52_Counter-Strike:
