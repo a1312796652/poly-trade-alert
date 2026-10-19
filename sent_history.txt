@@ -87,3 +87,4 @@
 1792371810_106.17_0_Exact Score: Cl
 1792383354_0.2_0_Spread: AJ Auxe
 1792383354_0.14001_0_Spread: Al Ghar
+1792416428_99.15_0.968_Exact Score: El
