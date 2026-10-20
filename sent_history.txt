@@ -103,3 +103,4 @@
 1792502004_5.19_0.962_Al Taawoun Saud
 1792502022_100_0.967_Exact Score: Al
 1792516595_100_0.999_Exact Score: Al
+1792516631_80_0.999_Asyut Petroleum
