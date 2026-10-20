@@ -100,3 +100,4 @@
 1792458894_100.12_0_Exact Score: Mu
 1792477136_106.48_0_Exact Score: An
 1792501938_80.28_0.93_Asyut Petroleum
+1792502004_5.19_0.962_Al Taawoun Saud
