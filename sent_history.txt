@@ -110,3 +110,4 @@
 1792518237_10.01_0.962_Al Nassr Saudi 
 1792520480_0.28_0_Asyut Petroleum
 1792520591_12_0.968_Exact Score: No
+1792520607_94.77_0.969_Exact Score: No
